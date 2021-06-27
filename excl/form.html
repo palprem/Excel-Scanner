@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+			<meta charset="UTF-8">
+			<title>Sample Form</title>
+	</head>
+	<body>
+        <form id='form'>
+			<input type="date" name="input_date" min="2021-01-01" max="2021-05-07" placeholder="yyyy-mm-dd" required/>
+			<input type="time" name="start_time" min="09:15" max="15:29" placeholder="hh:mm" required/>
+			<input type="time" name="end_time" min="09:15" max="15:29" placeholder="hh:mm" required/>
+			<select id="option_sel" name="option">
+				<option value="nifty">Nifty</option>
+				<option value="sector">Sector</option>
+			</select>
+			<input type="submit">
+        </form>
+		<table id="table" >
+			<tr>
+				<th>name</th>
+				<th>nifty_pc</th>
+				<th>stock_pc</th>
+				<th>rs_wo_beta</th>
+				<th>beta_val</th>
+				<th>rs_w_beta</th>
+			</tr>
+		</table>
+        <script>
+			const subBtn = document.getElementById("form");
+			subBtn.addEventListener('submit', (event)=>{
+				let fields = {}
+				event.preventDefault();
+				let form = event.target
+				for (input of form) {
+					const { type,name,value } = input;
+					if (type !== "submit") {
+						// console.log(name);
+						fields[name] = value
+					}
+				} 
+				// console.log(fields);
+				fetch("http://127.0.0.1:8000/",{
+					method: 'POST',
+					headers: {
+      					'Content-Type': 'application/json'
+				    },
+					body: JSON.stringify(fields),
+				}).then(response => response.json())
+  				.then(data => {
+					  let x = JSON.parse(data)
+					  console.log(x)
+					// const table = document.getElementById('table')
+					// for (row of x){
+					// 	table.innerHTML += `<tr><td>${row.name}</td><td>${row.nifty_pc}</td><td>${row.stock_pc}</td><td>${row.rs_wo_beta}</td><td>${row.beta_val}</td><td>${row.rs_w_beta}</td></tr>`
+					// }
+					});
+			})
+
+        </script>
+		<style>
+			table, td, th{
+				border: 1px solid black;
+				border-collapse: collapse;
+			}
+
+		</style>
+    </body>
+</html>
